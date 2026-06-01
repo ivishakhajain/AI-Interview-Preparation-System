@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interview</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark bg-dark p-3">
+  <div class="container">
+    <a class="navbar-brand" href="/">AI Interview System</a>
+  </div>
+</nav>
+
+<div class="container mt-4">
+
+    <h5 class="text-center text-primary">
+    Welcome {{ user }}
+</h5>
+
+    <h4 class="text-center text-success">Live Camera</h4>
+
+<div class="text-center">
+    <video id="video" width="320" height="240" autoplay
+    style="border:2px solid black; border-radius:10px;"></video>
+
+    <br><br>
+
+<button id="startBtn"
+class="btn btn-danger">
+
+🎥 Start Recording
+
+</button>
+
+<button id="stopBtn"
+class="btn btn-secondary">
+
+⏹ Stop Recording
+
+</button>
+    
+</div>
+
+<br>
+<h4 class="text-center text-danger">
+    Time Left: <span id="timer">60</span> sec
+</h4>
+
+<h2 class="text-center">Interview Questions</h2>
+
+<form method="POST" action="/submit_answers">
+
+{% for q in questions %}
+
+<div class="card p-3 mt-3 shadow">
+
+    <h5>{{ q }}</h5>
+
+    <textarea class="form-control" 
+    name="answer{{ loop.index0 }}"></textarea>
+
+    <button type="button"
+class="btn btn-success mt-2"
+onclick="startVoice(this)">
+🎤 Speak Answer
+</button>
+
+</div>
+
+{% endfor %}
+
+<div class="text-center mt-4">
+    <button type="submit" class="btn btn-primary">
+        Submit Interview
+    </button>
+</div>
+
+<script>
+    const video = document.getElementById("video");
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+    .then(function(stream) {
+        video.srcObject = stream;
+    })
+    .catch(function(err) {
+        alert("Camera not allowed or not supported");
+        console.log(err);
+    });
+</script>
+
+</form>
+
+</div>
+
+<script>
+
+let timeLeft = 60;
+
+const timer = document.getElementById("timer");
+
+setInterval(function(){
+
+    timeLeft--;
+
+    timer.innerHTML = timeLeft;
+
+    if(timeLeft <= 0){
+
+        alert("Interview Time Over");
+
+         document.forms[0].submit();
+    }
+
+},1000);
+
+</script>
+
+<script>
+
+function startVoice(button){
+
+    const recognition =
+    new webkitSpeechRecognition();
+
+    recognition.lang = "en-US";
+
+    recognition.start();
+
+    recognition.onresult = function(event){
+
+        const text =
+        event.results[0][0].transcript;
+
+        const textarea =
+        button.previousElementSibling;
+
+        textarea.value = text;
+    };
+}
+
+</script>
+
+<script>
+
+document.addEventListener("visibilitychange",
+function(){
+
+    if(document.hidden){
+
+        alert("Cheating Detected! Don't switch tabs.");
+    }
+
+});
+
+</script>
+
+<script>
+
+let mediaRecorder;
+
+let recordedChunks = [];
+
+const startBtn =
+document.getElementById("startBtn");
+
+const stopBtn =
+document.getElementById("stopBtn");
+
+startBtn.onclick = async function(){
+
+const stream =
+await navigator.mediaDevices.getUserMedia({
+
+video:true,
+audio:true
+
+});
+
+mediaRecorder =
+new MediaRecorder(stream);
+
+recordedChunks = [];
+
+mediaRecorder.ondataavailable =
+function(event){
+
+if(event.data.size > 0){
+
+recordedChunks.push(event.data);
+
+}
+
+};
+
+mediaRecorder.onstop =
+function(){
+
+const blob =
+new Blob(recordedChunks, {
+
+type:"video/webm"
+
+});
+
+const url =
+URL.createObjectURL(blob);
+
+const a =
+document.createElement("a");
+
+a.href = url;
+
+a.download = "interview_recording.webm";
+
+a.click();
+
+};
+
+mediaRecorder.start();
+
+alert("Recording Started");
+
+};
+
+stopBtn.onclick = function(){
+
+mediaRecorder.stop();
+
+alert("Recording Saved");
+
+};
+
+</script>
+
+</body>
+</html>

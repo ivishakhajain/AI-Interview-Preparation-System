@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark bg-dark p-3">
+  <div class="container">
+    <a class="navbar-brand" href="/">AI Interview System</a>
+  </div>
+</nav>
+
+<div class="container text-center mt-5">
+
+<div class="card p-4 shadow">
+
+    <h1 class="text-success">Final Score: {{ score }}%</h1>
+    <a href="/certificate" class="btn btn-warning mt-3">
+    Download Certificate
+</a>
+
+    <h3>{{ feedback }}</h3>
+
+    <h4 class="mt-4">Performance Analytics 📊</h4>
+
+<p class="mt-3">Python Skill</p>
+
+<div class="progress">
+
+<div class="progress-bar bg-success"
+style="width:80%">
+
+80%
+
+</div>
+
+</div>
+
+<p class="mt-3">SQL Skill</p>
+
+<div class="progress">
+
+<div class="progress-bar bg-info"
+style="width:70%">
+
+70%
+
+</div>
+
+</div>
+
+<p class="mt-3">Communication</p>
+
+<div class="progress">
+
+<div class="progress-bar bg-warning"
+style="width:90%">
+
+90%
+
+</div>
+
+</div>
+
+    {% if score >= 80 %}
+        <h4 class="text-success">Selected 🎉</h4>
+    {% elif score >= 50 %}
+        <h4 class="text-warning">Shortlisted 👍</h4>
+    {% else %}
+        <h4 class="text-danger">Rejected ❌</h4>
+    {% endif %}
+
+    <a href="/interview" class="btn btn-primary mt-3">Retry</a>
+
+    <br>
+
+<a href="/history"
+class="btn btn-info mt-3">
+
+📜 View History
+
+</a>
+
+    <br>
+
+<a href="/download_pdf"
+class="btn btn-warning mt-3">
+
+📄 Download PDF Report
+
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>
