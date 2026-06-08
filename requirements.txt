@@ -4,3 +4,4 @@ Werkzeug
 reportlab
 pdfminer.six
 opencv-python
+gunicorn
